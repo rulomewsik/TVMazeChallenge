@@ -1,8 +1,8 @@
 package com.tvmaze.challenge.di.modules
 
-import com.tvmaze.challenge.domain.sources.local.ShowsListSource
+import com.tvmaze.challenge.domain.sources.local.FavoriteShowsSource
 import com.tvmaze.challenge.domain.sources.remote.TVMazeRemoteSource
-import com.tvmaze.challenge.local.sources.ShowsListSourceImpl
+import com.tvmaze.challenge.local.sources.FavoriteShowsSourceImpl
 import com.tvmaze.challenge.remote.sources.TVMazeRemoteSourceImpl
 import dagger.Module
 import dagger.Provides
@@ -20,5 +20,5 @@ object DomainModule {
 
     @Singleton
     @Provides
-    fun provideShowsListLocalSource(showsListSource: ShowsListSourceImpl): ShowsListSource = showsListSource
+    fun provideShowsListLocalSource(showsListSource: FavoriteShowsSourceImpl): FavoriteShowsSource = showsListSource
 }

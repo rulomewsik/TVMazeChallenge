@@ -16,17 +16,23 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ShowsListViewModel @Inject constructor(
+class FavoriteShowsViewModel @Inject constructor(
     @ApplicationContext context: Context,
-    private val tvMazeUseCase: TVMazeUseCase
+    private val tvMazeUseCase: TVMazeUseCase,
+    private val favoriteShowsUseCase: FavoriteShowsUseCase
 ): AndroidViewModel(context as Application) {
 
     //region Properties
 
+    private var _bottomNavigationMenuItems = MutableStateFlow<List<BottomNavigationItem>>(emptyList())
+    var bottomNavigationMenuItems: StateFlow<List<BottomNavigationItem>> = _bottomNavigationMenuItems
 
     //endregion
 
-    suspend fun getAllTVShows(): List<TVShowModel> {
-        return tvMazeUseCase.getAllTVShows() ?: emptyList()
+
+    private suspend fun getFavoriteShows() {
+        viewModelScope.launch {
+
+        }
     }
 }

@@ -23,7 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun ShowsListScreen(
+fun PeopleScreen(
     viewModel: ShowsListViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -42,7 +42,7 @@ fun ShowsListScreen(
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "Shows List Screen",
+            text = "People Screen",
             fontWeight = FontWeight.Bold,
             color = DarkGray,
             modifier = Modifier.align(Alignment.CenterHorizontally),
