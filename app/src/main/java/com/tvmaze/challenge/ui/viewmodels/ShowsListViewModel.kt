@@ -23,10 +23,20 @@ class ShowsListViewModel @Inject constructor(
 
     //region Properties
 
+    private var _showsList = MutableStateFlow<List<TVShowModel>>(emptyList())
+    var showsList: StateFlow<List<TVShowModel>> = _showsList
 
     //endregion
 
-    suspend fun getAllTVShows(): List<TVShowModel> {
-        return tvMazeUseCase.getAllTVShows() ?: emptyList()
+    init {
+        viewModelScope.launch {
+            getAllTVShows()
+        }
+    }
+
+    suspend fun getAllTVShows() {
+        viewModelScope.launch {
+            tvMazeUseCase.getAllTVShows()?.let { _showsList.tryEmit(it) }
+        }
     }
 }

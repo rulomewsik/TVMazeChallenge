@@ -12,7 +12,19 @@ class TVMazeUseCase @Inject constructor(
 
         if (response.isSuccessful){
             response.body().let {
-                return emptyList()
+                return it
+            }
+        }else {
+            return emptyList()
+        }
+    }
+
+    suspend fun getPaginatedShows(page: Int): List<TVShowModel>? {
+        val response = tvMazeRemoteSource.getPaginatedShows(page.toString())
+
+        if (response.isSuccessful){
+            response.body().let {
+                return it
             }
         }else {
             return emptyList()
