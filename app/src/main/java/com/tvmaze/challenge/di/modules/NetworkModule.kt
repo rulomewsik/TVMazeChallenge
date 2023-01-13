@@ -1,7 +1,7 @@
 package com.tvmaze.challenge.di.modules
 
 import com.tvmaze.challenge.BuildConfig
-import com.tvmaze.challenge.other.Constants.TV_MAZE_BASE_URL
+import com.tvmaze.challenge.utils.Constants.TV_MAZE_BASE_URL
 import com.tvmaze.challenge.remote.services.TvMazeService
 import dagger.Module
 import dagger.Provides

@@ -3,20 +3,15 @@ package com.tvmaze.challenge.ui.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -36,10 +31,8 @@ import com.tvmaze.challenge.ui.navigation.BottomNavigation
 import com.tvmaze.challenge.ui.navigation.MainTopAppBar
 import com.tvmaze.challenge.ui.theme.DarkGray
 import com.tvmaze.challenge.ui.theme.LightBlueGreen
-import com.tvmaze.challenge.ui.theme.SecondaryColor
 import com.tvmaze.challenge.ui.viewmodels.ShowsListViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.tvmaze.challenge.utils.SearchBarState
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -51,6 +44,8 @@ fun ShowsListScreen(
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
+    val searchBarState by viewModel.searchBarState
+    val searchTextState by viewModel.searchTextState
     val showsList = viewModel.getTVShowsByPage(0).collectAsLazyPagingItems()
     val currentShowsPage = remember { mutableStateOf(0) }
 
@@ -63,10 +58,17 @@ fun ShowsListScreen(
         topBar = {
             MainTopAppBar(
                 title = stringResource(id = R.string.shows_navigation),
-                onSearchClick = {
-
-                }
-            )
+                searchBarState = searchBarState,
+                searchTextState = searchTextState,
+                onTextChanged = { viewModel.updateSearchTextState(it) },
+                onSearchClicked = {},
+                onSearchTriggered = {
+                    viewModel.updateSearchBarState(SearchBarState.OPENED)
+                },
+                onCloseClicked = {
+                    viewModel.updateSearchTextState("")
+                    viewModel.updateSearchBarState(SearchBarState.CLOSED)
+                })
         },
         bottomBar = { BottomNavigation(navController = navController) }
     ) {
