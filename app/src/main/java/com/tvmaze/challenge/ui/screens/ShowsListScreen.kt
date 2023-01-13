@@ -33,6 +33,7 @@ import com.tvmaze.challenge.ui.theme.DarkGray
 import com.tvmaze.challenge.ui.theme.LightBlueGreen
 import com.tvmaze.challenge.ui.viewmodels.ShowsListViewModel
 import com.tvmaze.challenge.utils.SearchBarState
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -46,13 +47,8 @@ fun ShowsListScreen(
 
     val searchBarState by viewModel.searchBarState
     val searchTextState by viewModel.searchTextState
-    val showsList = viewModel.getTVShowsByPage(0).collectAsLazyPagingItems()
-    val currentShowsPage = remember { mutableStateOf(0) }
-
-
-//    LaunchedEffect(key1 = showsListLastIndex) {
-//        viewModel.getTVShowsByPage(currentShowsPage.value)
-//    }
+    val showsListPager = viewModel.getTVShowsPagerFlow().collectAsLazyPagingItems()
+    val searchShowsList = viewModel.searchShowsList.collectAsState().value
 
     Scaffold(
         topBar = {
@@ -61,7 +57,11 @@ fun ShowsListScreen(
                 searchBarState = searchBarState,
                 searchTextState = searchTextState,
                 onTextChanged = { viewModel.updateSearchTextState(it) },
-                onSearchClicked = {},
+                onSearchClicked = {
+                    coroutineScope.launch {
+                        viewModel.getShowsByName(searchTextState)
+                    }
+                },
                 onSearchTriggered = {
                     viewModel.updateSearchBarState(SearchBarState.OPENED)
                 },
@@ -78,95 +78,149 @@ fun ShowsListScreen(
                 .background(LightBlueGreen)
                 .wrapContentSize(Alignment.Center)
         ) {
-            LazyVerticalGrid(
-                columns = GridCells.Adaptive(160.dp),
-                contentPadding = PaddingValues(
-                    start = 8.dp,
-                    top = 16.dp,
-                    end = 8.dp,
-                    bottom = 16.dp
-                )
-            ) {
-                items(showsList.itemCount) { index ->
-                    Card(
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth()
-                            .height(200.dp),
-                        elevation = 16.dp,
+            when (searchBarState) {
+                SearchBarState.OPENED -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(160.dp),
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            top = 16.dp,
+                            end = 8.dp,
+                            bottom = 80.dp
+                        )
                     ) {
-                        Box(
-                            contentAlignment = Alignment.BottomCenter,
-                            modifier = Modifier
-                                .background(
-                                    brush = Brush.verticalGradient(
-                                        colors = listOf(
-                                            Color.Transparent,
-                                            Color.Black
+                        items(searchShowsList.size) { index ->
+                            Card(
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .fillMaxWidth()
+                                    .height(200.dp),
+                                elevation = 16.dp,
+                            ) {
+                                Box(
+                                    contentAlignment = Alignment.BottomCenter,
+                                    modifier = Modifier
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                colors = listOf(
+                                                    Color.Transparent,
+                                                    Color.Black
+                                                )
+                                            )
                                         )
+                                ) {
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(context)
+                                            .data(searchShowsList[index].show?.image?.original)
+                                            .crossfade(true)
+                                            .build(),
+                                        placeholder = painterResource(id = R.drawable.ic_tv),
+                                        contentDescription = searchShowsList[index].show?.name.toString(),
+                                        contentScale = ContentScale.Crop,
+                                        alpha = 0.6f
                                     )
-                                )
-                        ) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(context)
-                                    .data(showsList[index]?.image?.original)
-                                    .crossfade(true)
-                                    .build(),
-                                placeholder = painterResource(id = R.drawable.ic_tv),
-                                contentDescription = showsList[index]?.name.toString(),
-                                contentScale = ContentScale.Crop,
-                                alpha = 0.6f
-                            )
-                            Text(
-                                text = showsList[index]?.name.toString(),
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                color = Color(0xFFFFFFFF),
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        }
-                    }
-                }
-                when (val state = showsList.loadState.refresh) {
-                    is LoadState.Error -> {
-                        //TODO Error Item
-                        //state.error to get error message
-                    }
-                    is LoadState.Loading -> {
-                        item {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center,
-                            ) {
-                                CircularProgressIndicator(color = DarkGray)
+                                    Text(
+                                        text = searchShowsList[index].show?.name.toString(),
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp,
+                                        color = Color(0xFFFFFFFF),
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.padding(16.dp)
+                                    )
+                                }
                             }
                         }
                     }
-                    else -> {}
                 }
-                when (val state = showsList.loadState.append) {
-                    is LoadState.Error -> {
-                        //TODO Pagination Error Item
-                        //state.error to get error message
-                    }
-                    is LoadState.Loading -> {
-                        item {
-                            Column(
+                SearchBarState.CLOSED -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Adaptive(160.dp),
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            top = 16.dp,
+                            end = 8.dp,
+                            bottom = 80.dp
+                        )
+                    ) {
+                        items(showsListPager.itemCount) { index ->
+                            Card(
+                                shape = RoundedCornerShape(8.dp),
                                 modifier = Modifier
-                                    .fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center,
+                                    .padding(8.dp)
+                                    .fillMaxWidth()
+                                    .height(200.dp),
+                                elevation = 16.dp,
                             ) {
-                                CircularProgressIndicator(color = DarkGray)
+                                Box(
+                                    contentAlignment = Alignment.BottomCenter,
+                                    modifier = Modifier
+                                        .background(
+                                            brush = Brush.verticalGradient(
+                                                colors = listOf(
+                                                    Color.Transparent,
+                                                    Color.Black
+                                                )
+                                            )
+                                        )
+                                ) {
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(context)
+                                            .data(showsListPager[index]?.image?.original)
+                                            .crossfade(true)
+                                            .build(),
+                                        placeholder = painterResource(id = R.drawable.ic_tv),
+                                        contentDescription = showsListPager[index]?.name.toString(),
+                                        contentScale = ContentScale.Crop,
+                                        alpha = 0.6f
+                                    )
+                                    Text(
+                                        text = showsListPager[index]?.name.toString(),
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp,
+                                        color = Color(0xFFFFFFFF),
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.padding(16.dp)
+                                    )
+                                }
                             }
                         }
                     }
-                    else -> {}
                 }
+            }
+            when (val state = showsListPager.loadState.refresh) {
+                is LoadState.Error -> {
+                    //TODO Error Item
+                    //state.error to get error message
+                }
+                is LoadState.Loading -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        CircularProgressIndicator(color = DarkGray)
+                    }
+                }
+                else -> {}
+            }
+            when (val state = showsListPager.loadState.append) {
+                is LoadState.Error -> {
+                    //TODO Pagination Error Item
+                    //state.error to get error message
+                }
+                is LoadState.Loading -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        CircularProgressIndicator(color = DarkGray)
+                    }
+                }
+                else -> {}
             }
         }
     }

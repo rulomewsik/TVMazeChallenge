@@ -3,6 +3,7 @@ package com.tvmaze.challenge.remote.sources
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.tvmaze.challenge.domain.sources.remote.TVMazeRemoteSource
+import com.tvmaze.challenge.remote.models.ShowSearchModel
 import com.tvmaze.challenge.remote.models.TVShowModel
 import com.tvmaze.challenge.remote.services.TvMazeService
 import retrofit2.Response
@@ -36,4 +37,6 @@ class TVMazeRemoteSourceImpl @Inject constructor(
             LoadResult.Error(e)
         }
     }
+
+    override suspend fun getShowsByName(name: String): Response<List<ShowSearchModel>> = service.getShowsByName(name)
 }

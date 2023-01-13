@@ -5,9 +5,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.tvmaze.challenge.domain.sources.remote.TVMazeRemoteSource
 import com.tvmaze.challenge.domain.sources.remote.TVShowsPagingSource
+import com.tvmaze.challenge.remote.models.ShowSearchModel
 import com.tvmaze.challenge.remote.models.TVShowModel
-import com.tvmaze.challenge.remote.sources.TVMazeRemoteSourceImpl
-import kotlinx.coroutines.delay
+import retrofit2.Response
 import javax.inject.Inject
 
 class TVMazeUseCase @Inject constructor(
@@ -25,6 +25,17 @@ class TVMazeUseCase @Inject constructor(
         }
     }
 
+    fun getShowsPager() = Pager(
+        config = PagingConfig(
+            initialLoadSize = 250,
+            pageSize = 250,
+            prefetchDistance = 25
+        ),
+        pagingSourceFactory = {
+            TVShowsPagingSource(this)
+        }
+    ).flow
+
     suspend fun getPaginatedShows(page: Int): List<TVShowModel>? {
         val response = tvMazeRemoteSource.getPaginatedShows(page.toString())
 
@@ -39,14 +50,15 @@ class TVMazeUseCase @Inject constructor(
         }
     }
 
-    fun getShows() = Pager(
-        config = PagingConfig(
-            initialLoadSize = 250,
-            pageSize = 250,
-            prefetchDistance = 25
-        ),
-        pagingSourceFactory = {
-            TVShowsPagingSource(this)
+    suspend fun getShowsByName(name: String): List<ShowSearchModel>? {
+        val response = tvMazeRemoteSource.getShowsByName(name)
+
+        if (response.isSuccessful) {
+            response.body().let {
+                return it
+            }
+        } else {
+            return emptyList()
         }
-    ).flow
+    }
 }
