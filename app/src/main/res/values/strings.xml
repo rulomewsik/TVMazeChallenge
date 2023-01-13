@@ -3,6 +3,8 @@
     <string name="search_navigation">Search</string>
     <string name="shows_navigation">Shows</string>
     <string name="show_detail_navigation">Show Detail</string>
+    <string name="show_detail_information_title">Information</string>
+    <string name="show_detail_episodes_title">Episodes</string>
     <string name="favorites_navigation">Favorites</string>
     <string name="people_navigation">People</string>
 </resources>

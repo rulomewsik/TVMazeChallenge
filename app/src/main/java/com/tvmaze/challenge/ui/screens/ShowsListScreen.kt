@@ -78,7 +78,6 @@ fun ShowsListScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(LightBlueGreen)
-                .wrapContentSize(Alignment.Center)
         ) {
             when (searchBarState) {
                 SearchBarState.OPENED -> {
