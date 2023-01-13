@@ -13,7 +13,7 @@ import com.tvmaze.challenge.ui.screens.ShowsListScreen
 fun NavigationGraph(navController: NavHostController) {
     NavHost(navController, startDestination = BottomNavigationItem.ShowsListScreen.screen_route) {
         composable(BottomNavigationItem.ShowsListScreen.screen_route) {
-            ShowsListScreen()
+            ShowsListScreen(navController)
         }
         composable(BottomNavigationItem.PeopleScreen.screen_route) {
             PeopleScreen()
