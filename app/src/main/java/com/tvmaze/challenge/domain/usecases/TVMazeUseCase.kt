@@ -5,9 +5,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.tvmaze.challenge.domain.sources.remote.TVMazeRemoteSource
 import com.tvmaze.challenge.domain.sources.remote.TVShowsPagingSource
+import com.tvmaze.challenge.remote.models.ShowEpisodeModel
 import com.tvmaze.challenge.remote.models.ShowSearchModel
 import com.tvmaze.challenge.remote.models.TVShowModel
-import retrofit2.Response
 import javax.inject.Inject
 
 class TVMazeUseCase @Inject constructor(
@@ -37,7 +37,7 @@ class TVMazeUseCase @Inject constructor(
     ).flow
 
     suspend fun getPaginatedShows(page: Int): List<TVShowModel>? {
-        val response = tvMazeRemoteSource.getPaginatedShows(page.toString())
+        val response = tvMazeRemoteSource.getPaginatedShows(page)
 
         Log.d("Holi", "Page $page")
         if (response.isSuccessful) {
@@ -52,6 +52,30 @@ class TVMazeUseCase @Inject constructor(
 
     suspend fun getShowsByName(name: String): List<ShowSearchModel>? {
         val response = tvMazeRemoteSource.getShowsByName(name)
+
+        if (response.isSuccessful) {
+            response.body().let {
+                return it
+            }
+        } else {
+            return emptyList()
+        }
+    }
+
+    suspend fun getShowDetail(id: Int): TVShowModel? {
+        val response = tvMazeRemoteSource.getShowDetail(id)
+
+        if (response.isSuccessful) {
+            response.body().let {
+                return it
+            }
+        } else {
+            return TVShowModel()
+        }
+    }
+
+    suspend fun getEpisodesByShowId(id: Int): List<ShowEpisodeModel>? {
+        val response = tvMazeRemoteSource.getEpisodesByShowId(id)
 
         if (response.isSuccessful) {
             response.body().let {

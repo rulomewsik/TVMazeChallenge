@@ -3,6 +3,7 @@ package com.tvmaze.challenge.remote.sources
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.tvmaze.challenge.domain.sources.remote.TVMazeRemoteSource
+import com.tvmaze.challenge.remote.models.ShowEpisodeModel
 import com.tvmaze.challenge.remote.models.ShowSearchModel
 import com.tvmaze.challenge.remote.models.TVShowModel
 import com.tvmaze.challenge.remote.services.TvMazeService
@@ -14,7 +15,7 @@ class TVMazeRemoteSourceImpl @Inject constructor(
 ): TVMazeRemoteSource, PagingSource<Int, TVShowModel>() {
     override suspend fun getAllShows(): Response<List<TVShowModel>> = service.getAllShows()
 
-    override suspend fun getPaginatedShows(page: String): Response<List<TVShowModel>> = service.getPaginatedShows(page)
+    override suspend fun getPaginatedShows(page: Int): Response<List<TVShowModel>> = service.getPaginatedShows(page)
 
     override fun getRefreshKey(state: PagingState<Int, TVShowModel>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -26,7 +27,7 @@ class TVMazeRemoteSourceImpl @Inject constructor(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TVShowModel> {
         return try {
             val nextPageNumber = params.key ?: 1
-            val response = service.getPaginatedShows(nextPageNumber.toString())
+            val response = service.getPaginatedShows(nextPageNumber)
 
             LoadResult.Page(
                 data = response.body()!!,
@@ -39,4 +40,8 @@ class TVMazeRemoteSourceImpl @Inject constructor(
     }
 
     override suspend fun getShowsByName(name: String): Response<List<ShowSearchModel>> = service.getShowsByName(name)
+
+    override suspend fun getShowDetail(id: Int): Response<TVShowModel> = service.getShowDetail(id)
+
+    override suspend fun getEpisodesByShowId(id: Int): Response<List<ShowEpisodeModel>> = service.getEpisodesByShowId(id)
 }
