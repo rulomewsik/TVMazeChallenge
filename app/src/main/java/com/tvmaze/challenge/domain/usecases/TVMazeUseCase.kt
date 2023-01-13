@@ -6,8 +6,10 @@ import androidx.paging.PagingConfig
 import com.tvmaze.challenge.domain.sources.remote.TVMazeRemoteSource
 import com.tvmaze.challenge.domain.sources.remote.TVShowsPagingSource
 import com.tvmaze.challenge.remote.models.ShowEpisodeModel
+import com.tvmaze.challenge.remote.models.ShowImagesModel
 import com.tvmaze.challenge.remote.models.ShowSearchModel
 import com.tvmaze.challenge.remote.models.TVShowModel
+import retrofit2.Response
 import javax.inject.Inject
 
 class TVMazeUseCase @Inject constructor(
@@ -71,6 +73,18 @@ class TVMazeUseCase @Inject constructor(
             }
         } else {
             return TVShowModel()
+        }
+    }
+
+    suspend fun getShowImages(id: Int): List<ShowImagesModel>? {
+        val response = tvMazeRemoteSource.getShowImages(id)
+
+        if (response.isSuccessful) {
+            response.body().let {
+                return it
+            }
+        } else {
+            return emptyList()
         }
     }
 

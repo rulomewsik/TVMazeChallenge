@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.tvmaze.challenge.domain.sources.remote.TVMazeRemoteSource
 import com.tvmaze.challenge.remote.models.ShowEpisodeModel
+import com.tvmaze.challenge.remote.models.ShowImagesModel
 import com.tvmaze.challenge.remote.models.ShowSearchModel
 import com.tvmaze.challenge.remote.models.TVShowModel
 import com.tvmaze.challenge.remote.services.TvMazeService
@@ -42,6 +43,8 @@ class TVMazeRemoteSourceImpl @Inject constructor(
     override suspend fun getShowsByName(name: String): Response<List<ShowSearchModel>> = service.getShowsByName(name)
 
     override suspend fun getShowDetail(id: Int): Response<TVShowModel> = service.getShowDetail(id)
+
+    override suspend fun getShowImages(id: Int): Response<List<ShowImagesModel>> = service.getShowImages(id)
 
     override suspend fun getEpisodesByShowId(id: Int): Response<List<ShowEpisodeModel>> = service.getEpisodesByShowId(id)
 }
