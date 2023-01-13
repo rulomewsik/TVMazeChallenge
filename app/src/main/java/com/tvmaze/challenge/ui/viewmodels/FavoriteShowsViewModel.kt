@@ -3,10 +3,9 @@ package com.tvmaze.challenge.ui.viewmodels
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.tvmaze.challenge.domain.entities.BottomNavigationItem
+import com.tvmaze.challenge.domain.entities.NavigationItem
 import com.tvmaze.challenge.domain.usecases.FavoriteShowsUseCase
 import com.tvmaze.challenge.domain.usecases.TVMazeUseCase
-import com.tvmaze.challenge.remote.models.TVShowModel
 import com.tvmaze.challenge.ui.Application
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -24,8 +23,8 @@ class FavoriteShowsViewModel @Inject constructor(
 
     //region Properties
 
-    private var _bottomNavigationMenuItems = MutableStateFlow<List<BottomNavigationItem>>(emptyList())
-    var bottomNavigationMenuItems: StateFlow<List<BottomNavigationItem>> = _bottomNavigationMenuItems
+    private var _bottomNavigationMenuItems = MutableStateFlow<List<NavigationItem>>(emptyList())
+    var bottomNavigationMenuItems: StateFlow<List<NavigationItem>> = _bottomNavigationMenuItems
 
     //endregion
 

@@ -2,6 +2,7 @@ package com.tvmaze.challenge.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -29,6 +30,7 @@ import coil.request.ImageRequest
 import com.tvmaze.challenge.R
 import com.tvmaze.challenge.ui.navigation.BottomNavigation
 import com.tvmaze.challenge.ui.navigation.MainTopAppBar
+import com.tvmaze.challenge.ui.navigation.goToShowDetailScreen
 import com.tvmaze.challenge.ui.theme.DarkGray
 import com.tvmaze.challenge.ui.theme.LightBlueGreen
 import com.tvmaze.challenge.ui.viewmodels.ShowsListViewModel
@@ -92,11 +94,20 @@ fun ShowsListScreen(
                         items(searchShowsList.size) { index ->
                             Card(
                                 shape = RoundedCornerShape(8.dp),
+                                elevation = 16.dp,
                                 modifier = Modifier
                                     .padding(8.dp)
                                     .fillMaxWidth()
-                                    .height(200.dp),
-                                elevation = 16.dp,
+                                    .height(200.dp)
+                                    .clickable {
+                                        searchShowsList[index].show.let { show ->
+                                            if (show != null) {
+                                                navController.goToShowDetailScreen(
+                                                    show
+                                                )
+                                            }
+                                        }
+                                    }
                             ) {
                                 Box(
                                     contentAlignment = Alignment.BottomCenter,
@@ -146,11 +157,20 @@ fun ShowsListScreen(
                         items(showsListPager.itemCount) { index ->
                             Card(
                                 shape = RoundedCornerShape(8.dp),
+                                elevation = 16.dp,
                                 modifier = Modifier
                                     .padding(8.dp)
                                     .fillMaxWidth()
-                                    .height(200.dp),
-                                elevation = 16.dp,
+                                    .height(200.dp)
+                                    .clickable {
+                                        showsListPager[index].let { show ->
+                                            if (show != null) {
+                                                navController.goToShowDetailScreen(
+                                                    show
+                                                )
+                                            }
+                                        }
+                                    }
                             ) {
                                 Box(
                                     contentAlignment = Alignment.BottomCenter,

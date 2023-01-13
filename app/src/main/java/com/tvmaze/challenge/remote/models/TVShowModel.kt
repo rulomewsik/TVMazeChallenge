@@ -1,8 +1,11 @@
 package com.tvmaze.challenge.remote.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
+@Parcelize
 data class TVShowModel (
     @SerializedName("id"             ) var id             : Int?              = null,
     @SerializedName("url"            ) var url            : String?           = null,
@@ -27,4 +30,4 @@ data class TVShowModel (
     @SerializedName("summary"        ) var summary        : String?           = null,
     @SerializedName("updated"        ) var updated        : Int?              = null,
     @SerializedName("_links"         ) var links          : LinksModel?       = LinksModel()
-): Serializable
+): Parcelable

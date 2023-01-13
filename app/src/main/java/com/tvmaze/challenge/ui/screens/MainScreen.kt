@@ -8,6 +8,5 @@ import com.tvmaze.challenge.ui.navigation.NavigationGraph
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen() {
-    val navController = rememberNavController()
-    NavigationGraph(navController = navController)
+    NavigationGraph()
 }

@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.tvmaze.challenge.domain.entities.BottomNavigationItem
+import com.tvmaze.challenge.domain.entities.NavigationItem
 import com.tvmaze.challenge.ui.theme.DarkGray
 import com.tvmaze.challenge.ui.theme.LightBlueGreen
 import com.tvmaze.challenge.ui.theme.PrimaryColor
@@ -18,9 +18,9 @@ import com.tvmaze.challenge.ui.theme.PrimaryColor
 @Composable
 fun BottomNavigation(navController: NavHostController) {
     val screenItems = listOf(
-        BottomNavigationItem.ShowsListScreen,
-        BottomNavigationItem.PeopleScreen,
-        BottomNavigationItem.FavoritesScreen,
+        NavigationItem.ShowsListScreen,
+        NavigationItem.PeopleScreen,
+        NavigationItem.FavoritesScreen,
     )
 
     val context = LocalContext.current
