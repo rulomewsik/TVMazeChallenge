@@ -154,12 +154,3 @@ private fun getShowDates(show: TVShowModel?): String {
 
 private fun getShowGenres(show: TVShowModel?): String =
     if (show?.genres?.isEmpty() == false) show.genres.joinToString(separator = " • ") else "-"
-
-@Composable
-fun HtmlSummary(text: String) {
-    AndroidView(factory = { context ->
-        TextView(context).apply {
-            setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY))
-        }
-    })
-}

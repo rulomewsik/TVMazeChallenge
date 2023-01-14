@@ -43,8 +43,6 @@ fun ShowDetailScreen(
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
 
-    val imagesList = viewModel.showImages.collectAsState().value
-    val mainImage = viewModel.showMainImage.collectAsState().value
     val bannerImage = viewModel.showBannerImage.collectAsState().value
 
     val tabRowItems = listOf(
@@ -54,12 +52,15 @@ fun ShowDetailScreen(
         ),
         TabRowItem(
             title = stringResource(id = R.string.show_detail_episodes_title),
-            screen = { EpisodesTabScreen(navController = navController, show = show, viewModel) }
+            screen = { EpisodesTabScreen(show, viewModel) }
         )
     )
 
-    LaunchedEffect(key1 = true){
-        show?.id?.let { viewModel.getShowImages(it) }
+    LaunchedEffect(key1 = true) {
+        show?.id?.let {
+            viewModel.getShowImages(it)
+            viewModel.getShowEpisodes(it)
+        }
     }
 
     Scaffold(

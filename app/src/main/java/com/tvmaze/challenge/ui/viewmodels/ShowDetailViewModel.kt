@@ -4,18 +4,14 @@ import android.content.Context
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import com.tvmaze.challenge.domain.entities.ExpandableSeasonCardItem
 import com.tvmaze.challenge.domain.usecases.TVMazeUseCase
 import com.tvmaze.challenge.remote.models.ShowEpisodeModel
 import com.tvmaze.challenge.remote.models.ShowImagesModel
-import com.tvmaze.challenge.remote.models.ShowSearchModel
 import com.tvmaze.challenge.remote.models.TVShowModel
 import com.tvmaze.challenge.ui.Application
-import com.tvmaze.challenge.utils.SearchBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -40,6 +36,12 @@ class ShowDetailViewModel @Inject constructor(
     private var _showBannerImage = MutableStateFlow(ShowImagesModel())
     var showBannerImage: StateFlow<ShowImagesModel> = _showBannerImage
 
+    private val _seasonCards = MutableStateFlow(listOf<ExpandableSeasonCardItem>())
+    val seasonCards: StateFlow<List<ExpandableSeasonCardItem>> = _seasonCards
+
+    private val _expandedSeasonCards = MutableStateFlow(listOf<Int>())
+    val expandedSeasonCards: StateFlow<List<Int>> = _expandedSeasonCards
+
     private var _showEpisodes = MutableStateFlow<List<ShowEpisodeModel>>(emptyList())
     var showEpisodes: StateFlow<List<ShowEpisodeModel>> = _showEpisodes
 
@@ -51,14 +53,37 @@ class ShowDetailViewModel @Inject constructor(
                 _showImages.tryEmit(imagesList)
                 _showMainImage.tryEmit(imagesList.first { it.main == true })
 
-                _showBannerImage.tryEmit(imagesList.first { it.type == "banner" || it.type == "background"  } )
+                _showBannerImage.tryEmit(imagesList.first { it.type == "banner" || it.type == "background" })
             }
         }
     }
 
     suspend fun getShowEpisodes(showId: Int) {
         viewModelScope.launch {
-            tvMazeUseCase.getEpisodesByShowId(showId)?.let { _showEpisodes.tryEmit(it) }
+            tvMazeUseCase.getEpisodesByShowId(showId)?.let { episodesList ->
+                _showEpisodes.tryEmit(episodesList)
+            }
+
+            tvMazeUseCase.getShowSeasons(showId)?.let { seasons ->
+                val seasonCardsList = mutableListOf<ExpandableSeasonCardItem>()
+                seasons.forEach { season ->
+                    seasonCardsList.add(
+                        ExpandableSeasonCardItem(
+                            id = season.number!!,
+                            title = "Season " + season.number,
+                            episodes = _showEpisodes.value.filter { it.season == season.number }
+                        )
+                    )
+                }
+                _seasonCards.tryEmit(seasonCardsList)
+            }
         }
+    }
+
+    fun onSeasonCardArrowClicked(cardId: Int) {
+        _expandedSeasonCards.value =
+            _expandedSeasonCards.value.toMutableList().also { list ->
+                if (list.contains(cardId)) list.remove(cardId) else list.add(cardId)
+            }
     }
 }

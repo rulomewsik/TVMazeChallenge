@@ -3,22 +3,21 @@ package com.tvmaze.challenge.ui.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.tvmaze.challenge.remote.models.TVShowModel
+import com.tvmaze.challenge.ui.components.ExpandableSeasonCard
 import com.tvmaze.challenge.ui.theme.LightBlueGreen
 import com.tvmaze.challenge.ui.viewmodels.ShowDetailViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun EpisodesTabScreen(
-    navController: NavHostController,
     show: TVShowModel?,
     viewModel: ShowDetailViewModel = hiltViewModel()
 ) {
@@ -26,15 +25,23 @@ fun EpisodesTabScreen(
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
+    val seasonCards = viewModel.seasonCards.collectAsState().value
+    val expandedSeasonCards = viewModel.expandedSeasonCards.collectAsState().value
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(LightBlueGreen)
-            .wrapContentSize(Alignment.Center)
+            .padding(24.dp)
     ) {
-        Text(
-            text = "Episodes",
-            style = MaterialTheme.typography.body1,
-        )
+        LazyColumn {
+            items(seasonCards.size) { index ->
+                ExpandableSeasonCard(
+                    card = seasonCards[index],
+                    onCardClick = { viewModel.onSeasonCardArrowClicked(seasonCards[index].id) },
+                    expanded = expandedSeasonCards.contains(seasonCards[index].id),
+                )
+            }
+        }
     }
 }

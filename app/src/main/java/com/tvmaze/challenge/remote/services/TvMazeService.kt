@@ -1,9 +1,6 @@
 package com.tvmaze.challenge.remote.services
 
-import com.tvmaze.challenge.remote.models.ShowEpisodeModel
-import com.tvmaze.challenge.remote.models.ShowImagesModel
-import com.tvmaze.challenge.remote.models.ShowSearchModel
-import com.tvmaze.challenge.remote.models.TVShowModel
+import com.tvmaze.challenge.remote.models.*
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -25,6 +22,12 @@ interface TvMazeService {
     @GET("shows/{id}/images")
     suspend fun getShowImages(@Path("id") id: Int): Response<List<ShowImagesModel>>
 
+    @GET("shows/{id}/seasons")
+    suspend fun getShowSeasons(@Path("id") id: Int): Response<List<ShowSeasonModel>>
+
     @GET("shows/{id}/episodes")
     suspend fun getEpisodesByShowId(@Path("id") id: Int): Response<List<ShowEpisodeModel>>
+
+    @GET("seasons/{id}/episodes")
+    suspend fun getSeasonEpisodes(@Path("id") id: Int): Response<List<ShowEpisodeModel>>
 }
