@@ -91,6 +91,8 @@ fun SeasonContent(
                             .crossfade(false)
                             .build(),
                         placeholder = painterResource(id = R.drawable.ic_tv),
+                        fallback = painterResource(id = R.drawable.ic_tv),
+                        error = painterResource(id = R.drawable.ic_tv),
                         contentDescription = episodes[index].name.toString(),
                         contentScale = ContentScale.Crop,
                     )

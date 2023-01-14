@@ -70,8 +70,7 @@ fun ShowsListScreen(
                     viewModel.updateSearchTextState("")
                     viewModel.updateSearchBarState(SearchBarState.CLOSED)
                 })
-        },
-        bottomBar = { BottomNavigation(navController = navController) }
+        }
     ) {
         Column(
             modifier = Modifier
@@ -108,7 +107,6 @@ fun ShowsListScreen(
                                     }
                             ) {
                                 Box(
-                                    contentAlignment = Alignment.BottomCenter,
                                     modifier = Modifier
                                         .background(
                                             brush = Brush.verticalGradient(
@@ -119,24 +117,34 @@ fun ShowsListScreen(
                                             )
                                         )
                                 ) {
+                                    val imageUrl = if (searchShowsList[index].show?.image != null) {
+                                        searchShowsList[index].show?.image?.original
+                                    } else {
+                                        ""
+                                    }
                                     AsyncImage(
+                                        modifier = Modifier.align(Alignment.Center),
                                         model = ImageRequest.Builder(context)
-                                            .data(searchShowsList[index].show?.image?.original)
+                                            .data(imageUrl)
                                             .crossfade(true)
                                             .build(),
-                                        placeholder = painterResource(id = R.drawable.ic_tv),
+                                        placeholder = painterResource(id = R.drawable.ic_tv_placeholder),
+                                        fallback = painterResource(id = R.drawable.ic_tv_placeholder),
+                                        error = painterResource(id = R.drawable.ic_tv_placeholder),
                                         contentDescription = searchShowsList[index].show?.name.toString(),
                                         contentScale = ContentScale.Crop,
                                         alpha = 0.6f
                                     )
-                                    Text(
-                                        text = searchShowsList[index].show?.name.toString(),
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 14.sp,
-                                        color = Color(0xFFFFFFFF),
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.padding(16.dp)
-                                    )
+                                    Column(modifier = Modifier.align(Alignment.BottomCenter)) {
+                                        Text(
+                                            text = searchShowsList[index].show?.name.toString(),
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 14.sp,
+                                            color = Color(0xFFFFFFFF),
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.padding(16.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -171,7 +179,6 @@ fun ShowsListScreen(
                                     }
                             ) {
                                 Box(
-                                    contentAlignment = Alignment.BottomCenter,
                                     modifier = Modifier
                                         .background(
                                             brush = Brush.verticalGradient(
@@ -182,24 +189,34 @@ fun ShowsListScreen(
                                             )
                                         )
                                 ) {
+                                    val imageUrl = if (showsListPager[index]?.image != null) {
+                                        showsListPager[index]?.image?.original
+                                    } else {
+                                        ""
+                                    }
                                     AsyncImage(
+                                        modifier = Modifier.align(Alignment.Center),
                                         model = ImageRequest.Builder(context)
-                                            .data(showsListPager[index]?.image?.original)
+                                            .data(imageUrl)
                                             .crossfade(true)
                                             .build(),
-                                        placeholder = painterResource(id = R.drawable.ic_tv),
+                                        placeholder = painterResource(id = R.drawable.ic_tv_placeholder),
+                                        fallback = painterResource(id = R.drawable.ic_tv_placeholder),
+                                        error = painterResource(id = R.drawable.ic_tv_placeholder),
                                         contentDescription = showsListPager[index]?.name.toString(),
                                         contentScale = ContentScale.Crop,
                                         alpha = 0.6f
                                     )
-                                    Text(
-                                        text = showsListPager[index]?.name.toString(),
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 14.sp,
-                                        color = Color(0xFFFFFFFF),
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.padding(16.dp)
-                                    )
+                                    Column(modifier = Modifier.align(Alignment.BottomCenter)) {
+                                        Text(
+                                            text = showsListPager[index]?.name.toString(),
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 14.sp,
+                                            color = Color(0xFFFFFFFF),
+                                            textAlign = TextAlign.Center,
+                                            modifier = Modifier.padding(16.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -207,10 +224,7 @@ fun ShowsListScreen(
                 }
             }
             when (val state = showsListPager.loadState.refresh) {
-                is LoadState.Error -> {
-                    //TODO Error Item
-                    //state.error to get error message
-                }
+                is LoadState.Error -> {}
                 is LoadState.Loading -> {
                     Column(
                         modifier = Modifier
@@ -224,10 +238,7 @@ fun ShowsListScreen(
                 else -> {}
             }
             when (val state = showsListPager.loadState.append) {
-                is LoadState.Error -> {
-                    //TODO Pagination Error Item
-                    //state.error to get error message
-                }
+                is LoadState.Error -> {}
                 is LoadState.Loading -> {
                     Column(
                         modifier = Modifier

@@ -59,7 +59,9 @@ fun EpisodeContent(
                 .data(episode.image?.original)
                 .crossfade(true)
                 .build(),
-            placeholder = painterResource(id = R.drawable.ic_tv),
+            placeholder = painterResource(id = R.drawable.ic_tv_placeholder),
+            fallback = painterResource(id = R.drawable.ic_tv_placeholder),
+            error = painterResource(id = R.drawable.ic_tv_placeholder),
             contentDescription = episode.name.toString(),
             contentScale = ContentScale.Crop,
             alpha = 0.6f

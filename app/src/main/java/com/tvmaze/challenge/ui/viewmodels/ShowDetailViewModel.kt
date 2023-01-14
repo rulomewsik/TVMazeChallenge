@@ -28,9 +28,6 @@ class ShowDetailViewModel @Inject constructor(
     private var _showImages = MutableStateFlow<List<ShowImagesModel>>(emptyList())
     var showImages: StateFlow<List<ShowImagesModel>> = _showImages
 
-    private var _showMainImage = MutableStateFlow(ShowImagesModel())
-    var showMainImage: StateFlow<ShowImagesModel> = _showMainImage
-
     private var _showBannerImage = MutableStateFlow(ShowImagesModel())
     var showBannerImage: StateFlow<ShowImagesModel> = _showBannerImage
 
@@ -52,9 +49,9 @@ class ShowDetailViewModel @Inject constructor(
         viewModelScope.launch {
             tvMazeUseCase.getShowImages(showId)?.let { imagesList ->
                 _showImages.tryEmit(imagesList)
-                _showMainImage.tryEmit(imagesList.first { it.main == true })
-
-                _showBannerImage.tryEmit(imagesList.first { it.type == "banner" || it.type == "background" })
+                if (imagesList.isNotEmpty()){
+                    _showBannerImage.tryEmit(imagesList.first { it.type == "banner" || it.type == "background" })
+                }
             }
         }
     }

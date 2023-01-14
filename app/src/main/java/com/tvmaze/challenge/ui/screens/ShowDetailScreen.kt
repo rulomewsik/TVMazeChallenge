@@ -113,7 +113,9 @@ fun ShowDetailScreen(
                             .data(bannerImage.resolutions?.original?.url)
                             .crossfade(true)
                             .build(),
-                        placeholder = painterResource(id = R.drawable.ic_tv),
+                        placeholder = painterResource(id = R.drawable.ic_tv_placeholder),
+                        fallback = painterResource(id = R.drawable.ic_tv_placeholder),
+                        error = painterResource(id = R.drawable.ic_tv_placeholder),
                         contentDescription = show?.name.toString(),
                         alignment = Alignment.Center,
                         contentScale = ContentScale.Crop
