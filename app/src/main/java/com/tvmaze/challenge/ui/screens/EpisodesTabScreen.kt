@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.tvmaze.challenge.remote.models.TVShowModel
+import com.tvmaze.challenge.remote.models.ShowEpisodeModel
 import com.tvmaze.challenge.ui.components.ExpandableSeasonCard
 import com.tvmaze.challenge.ui.theme.LightBlueGreen
 import com.tvmaze.challenge.ui.viewmodels.ShowDetailViewModel
@@ -18,13 +18,9 @@ import com.tvmaze.challenge.ui.viewmodels.ShowDetailViewModel
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun EpisodesTabScreen(
-    show: TVShowModel?,
-    viewModel: ShowDetailViewModel = hiltViewModel()
+    viewModel: ShowDetailViewModel = hiltViewModel(),
+    onEpisodeClicked: () -> Unit
 ) {
-    val context = LocalContext.current
-    val scaffoldState = rememberScaffoldState()
-    val coroutineScope = rememberCoroutineScope()
-
     val seasonCards = viewModel.seasonCards.collectAsState().value
     val expandedSeasonCards = viewModel.expandedSeasonCards.collectAsState().value
 
@@ -38,8 +34,9 @@ fun EpisodesTabScreen(
             items(seasonCards.size) { index ->
                 ExpandableSeasonCard(
                     card = seasonCards[index],
-                    onCardClick = { viewModel.onSeasonCardArrowClicked(seasonCards[index].id) },
+                    onArrowClick = { viewModel.onSeasonCardArrowClicked(seasonCards[index].id) },
                     expanded = expandedSeasonCards.contains(seasonCards[index].id),
+                    onEpisodeClicked = { onEpisodeClicked() }
                 )
             }
         }

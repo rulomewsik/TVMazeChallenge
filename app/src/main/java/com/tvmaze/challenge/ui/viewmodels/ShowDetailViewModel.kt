@@ -25,8 +25,6 @@ class ShowDetailViewModel @Inject constructor(
 
     //region Properties
 
-    var show by mutableStateOf(TVShowModel())
-
     private var _showImages = MutableStateFlow<List<ShowImagesModel>>(emptyList())
     var showImages: StateFlow<List<ShowImagesModel>> = _showImages
 
@@ -44,6 +42,9 @@ class ShowDetailViewModel @Inject constructor(
 
     private var _showEpisodes = MutableStateFlow<List<ShowEpisodeModel>>(emptyList())
     var showEpisodes: StateFlow<List<ShowEpisodeModel>> = _showEpisodes
+
+    private var _episodeSelected = MutableStateFlow(ShowEpisodeModel())
+    var episodeSelected: StateFlow<ShowEpisodeModel> = _episodeSelected
 
     //endregion
 
@@ -85,5 +86,9 @@ class ShowDetailViewModel @Inject constructor(
             _expandedSeasonCards.value.toMutableList().also { list ->
                 if (list.contains(cardId)) list.remove(cardId) else list.add(cardId)
             }
+    }
+
+    fun onEpisodeClicked(episode: ShowEpisodeModel){
+        _episodeSelected.tryEmit(episode)
     }
 }

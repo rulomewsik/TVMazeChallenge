@@ -28,8 +28,7 @@ import java.time.LocalDate
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun DetailTabScreen(
-    show: TVShowModel?,
-    viewModel: ShowDetailViewModel = hiltViewModel()
+    show: TVShowModel?
 ) {
     Column(
         modifier = Modifier
@@ -118,13 +117,13 @@ fun DetailTabScreen(
     }
 }
 
-private fun getScheduleFormat(schedule: ScheduleModel?): String {
+fun getScheduleFormat(schedule: ScheduleModel?): String {
     val days = if (schedule?.days?.isNotEmpty() == true) schedule.days.joinToString() else "-"
     val time = if (schedule?.time?.isNotEmpty() == true) schedule.time else "--:--"
     return "$days | $time"
 }
 
-private fun getRuntimeFormat(show: TVShowModel?): String {
+fun getRuntimeFormat(show: TVShowModel?): String {
     return if (show?.runtime != null) {
         "${show.runtime} min"
     } else if (show?.averageRuntime != null) {
@@ -134,7 +133,7 @@ private fun getRuntimeFormat(show: TVShowModel?): String {
     }
 }
 
-private fun getShowDates(show: TVShowModel?): String {
+fun getShowDates(show: TVShowModel?): String {
     val premieredYear = if (show?.premiered != null) {
         val premieredDate = LocalDate.parse(show.premiered)
         premieredDate.year.toString()
@@ -152,5 +151,5 @@ private fun getShowDates(show: TVShowModel?): String {
     return "$premieredYear - $endedYear"
 }
 
-private fun getShowGenres(show: TVShowModel?): String =
+fun getShowGenres(show: TVShowModel?): String =
     if (show?.genres?.isEmpty() == false) show.genres.joinToString(separator = " • ") else "-"

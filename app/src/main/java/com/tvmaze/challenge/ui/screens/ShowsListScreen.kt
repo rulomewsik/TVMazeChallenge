@@ -44,7 +44,6 @@ fun ShowsListScreen(
     viewModel: ShowsListViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
 
     val searchBarState by viewModel.searchBarState

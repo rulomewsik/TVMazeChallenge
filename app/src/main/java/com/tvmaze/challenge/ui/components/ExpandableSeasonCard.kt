@@ -3,7 +3,6 @@ package com.tvmaze.challenge.ui.components
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tvmaze.challenge.R
 import com.tvmaze.challenge.domain.entities.ExpandableSeasonCardItem
-import com.tvmaze.challenge.remote.models.ShowEpisodeModel
 import com.tvmaze.challenge.ui.theme.LightBlueGreen
 import com.tvmaze.challenge.ui.theme.PrimaryColor
 import com.tvmaze.challenge.ui.theme.SecondaryColor
@@ -33,7 +31,8 @@ import com.tvmaze.challenge.utils.Constants.EXPAND_ANIMATION_DURATION
 @Composable
 fun ExpandableSeasonCard(
     card: ExpandableSeasonCardItem,
-    onCardClick: () -> Unit,
+    onArrowClick: () -> Unit,
+    onEpisodeClicked: () -> Unit,
     expanded: Boolean,
 ) {
     val transitionState = remember {
@@ -69,7 +68,9 @@ fun ExpandableSeasonCard(
     ) {
         Column {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -81,7 +82,7 @@ fun ExpandableSeasonCard(
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center
                 )
-                IconButton(onClick = { onCardClick() }) {
+                IconButton(onClick = { onArrowClick() }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_down),
                         contentDescription = "Expandable Arrow",
@@ -95,7 +96,8 @@ fun ExpandableSeasonCard(
             SeasonContent(
                 episodes = card.episodes,
                 visible = expanded,
-                initialVisibility = expanded
+                initialVisibility = expanded,
+                onEpisodeClicked = { onEpisodeClicked() }
             )
         }
     }
