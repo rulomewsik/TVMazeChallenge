@@ -7,4 +7,5 @@
     <string name="show_detail_episodes_title">Episodes</string>
     <string name="favorites_navigation">Favorites</string>
     <string name="people_navigation">People</string>
+    <string name="show_detail_summary">Summary</string>
 </resources>

@@ -4,13 +4,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
@@ -20,8 +28,7 @@ import com.tvmaze.challenge.domain.entities.TabRowItem
 import com.tvmaze.challenge.remote.models.TVShowModel
 import com.tvmaze.challenge.ui.navigation.DetailAppBar
 import com.tvmaze.challenge.ui.theme.LightBlueGreen
-import com.tvmaze.challenge.ui.theme.SecondaryColor
-import com.tvmaze.challenge.ui.viewmodels.ShowsListViewModel
+import com.tvmaze.challenge.ui.viewmodels.ShowDetailViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -29,26 +36,32 @@ import kotlinx.coroutines.launch
 fun ShowDetailScreen(
     navController: NavHostController,
     show: TVShowModel?,
-    viewModel: ShowsListViewModel = hiltViewModel()
+    viewModel: ShowDetailViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
 
-    val showsListPager = viewModel.getTVShowsPagerFlow().collectAsLazyPagingItems()
-    val searchShowsList = viewModel.searchShowsList.collectAsState().value
+    val imagesList = viewModel.showImages.collectAsState().value
+    val mainImage = viewModel.showMainImage.collectAsState().value
+    val bannerImage = viewModel.showBannerImage.collectAsState().value
 
     val tabRowItems = listOf(
         TabRowItem(
             title = stringResource(id = R.string.show_detail_information_title),
-            screen = { DetailTabScreen(navController = navController, show = show) }
+            screen = { DetailTabScreen(show, viewModel) }
         ),
         TabRowItem(
             title = stringResource(id = R.string.show_detail_episodes_title),
-            screen = { EpisodesTabScreen(navController = navController, show = show) }
+            screen = { EpisodesTabScreen(navController = navController, show = show, viewModel) }
         )
     )
+
+    LaunchedEffect(key1 = true){
+        show?.id?.let { viewModel.getShowImages(it) }
+    }
+
     Scaffold(
         topBar = {
             DetailAppBar(
@@ -62,6 +75,32 @@ fun ShowDetailScreen(
                 .background(LightBlueGreen)
                 .padding(it)
         ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(240.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black
+                            )
+                        )
+                    )
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(context)
+                        .data(bannerImage.resolutions?.original?.url)
+                        .crossfade(true)
+                        .build(),
+                    placeholder = painterResource(id = R.drawable.ic_tv),
+                    contentDescription = show?.name.toString(),
+                    alignment = Alignment.Center,
+                    contentScale = ContentScale.Crop,
+                    alpha = 0.6f
+                )
+            }
             TabRow(
                 selectedTabIndex = pagerState.currentPage,
                 indicator = { tabPositions ->

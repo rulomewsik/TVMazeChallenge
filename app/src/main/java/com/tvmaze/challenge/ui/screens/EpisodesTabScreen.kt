@@ -12,22 +12,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.tvmaze.challenge.remote.models.TVShowModel
-import com.tvmaze.challenge.ui.navigation.DetailAppBar
 import com.tvmaze.challenge.ui.theme.LightBlueGreen
-import com.tvmaze.challenge.ui.viewmodels.ShowsListViewModel
+import com.tvmaze.challenge.ui.viewmodels.ShowDetailViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun EpisodesTabScreen(
     navController: NavHostController,
     show: TVShowModel?,
-    viewModel: ShowsListViewModel = hiltViewModel()
+    viewModel: ShowDetailViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
-    val showsListPager = viewModel.getTVShowsPagerFlow().collectAsLazyPagingItems()
-    val searchShowsList = viewModel.searchShowsList.collectAsState().value
 
     Column(
         modifier = Modifier
